@@ -1,21 +1,14 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import RankOverlay from './rankOverlay/RankOverlay';
 import './App.css';
 
-function Hello() {
-  return (
-    <div className="wrapper">
-      Inital Commit
-    </div>
-  );
-}
-
-export default function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<RankOverlay />} />
       </Routes>
     </Router>
   );
-}
+};
+export default App;
