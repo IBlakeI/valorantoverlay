@@ -4,10 +4,11 @@ import './rankOverlay.css';
 const RankOverlay = () => {
   const [data, setData] = useState();
   const fetchStats = async () => {
-    await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/na/Blake/000`)
+    await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/na/Dasnerth/king`)
       .then((response) => response.json())
       .then((data) => setData(data?.data));
   };
+  console.log(data);
   useEffect(() => {
     fetchStats();
     let interval = setInterval(() => {
@@ -20,18 +21,46 @@ const RankOverlay = () => {
     };
   }, []);
 
+  const getEloColor = (change) => {
+    if (change > 0) {
+      return 'green';
+    }
+    if (change === 0) {
+      return 'white';
+    }
+    if (change < 0) {
+      return 'red';
+    }
+  };
+
   return (
-    <div className="wrapper">
+    <div className="overlayWrapper">
+      <div className="wrapper">
+        <div className="logoEloWrapper">
+          <div className="rankLogo">
+            <img src={data?.images?.small} />
+          </div>
+          <div className="elo">
+            <b>{data?.ranking_in_tier}</b>
+            <div className="rrtext">{' RR'}</div>
+          </div>
+        </div>
+        <div
+          className="lastGame"
+          style={{
+            color: getEloColor(data?.mmr_change_to_last_game),
+          }}
+        >
+          {data?.mmr_change_to_last_game > 0
+            ? `+${data?.mmr_change_to_last_game}`
+            : data?.mmr_change_to_last_game}
+        </div>
+      </div>
       <div className="nameWrapper">
         {data?.name}
-        {'#'}
+        {' #'}
         {data?.tag}
       </div>
-      <div className="rankLogo">
-        <img src={data?.images?.small} />
-      </div>
-      <div className="elo">{`${data?.elo} RP`}</div>
-      <div className="lastGame">{data?.mmr_change_to_last_game}</div>
     </div>
   );
 };

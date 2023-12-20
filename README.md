@@ -1,3 +1,4 @@
+<img src=".erb/img/overlaypreview.png" width="300px" />
 <br>
 
 <p>
