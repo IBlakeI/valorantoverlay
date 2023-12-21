@@ -196,7 +196,11 @@ export default class MenuBuilder {
   }
 
   createSettingsWindow = () => {
-    // Create a new BrowserWindow for the settings
+    if (this.settingsWindow && !this.settingsWindow.isDestroyed()) {
+      this.settingsWindow.focus();
+      return;
+    }
+
     this.settingsWindow = new BrowserWindow({
       width: 400,
       height: 300,

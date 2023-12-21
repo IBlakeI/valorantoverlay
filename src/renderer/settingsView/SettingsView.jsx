@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { AppContext } from '../App';
 import './settingsView.css'; // Import your CSS file
 
 const SettingsPage = () => {
@@ -7,19 +8,32 @@ const SettingsPage = () => {
   const [selectedRegion, setSelectedRegion] = useState('NA');
   const [riotName, setRiotName] = useState('');
   const [riotTag, setRiotTag] = useState('');
+  const { state, dispatch } = useContext(AppContext);
 
   const handleSaveSettings = (e) => {
     e.preventDefault();
 
-    // Implement your save logic here
-    console.log('Settings saved:', {
+    const newConfig = {
       showNameAndTag,
       backgroundColor,
       selectedRegion,
       riotName,
       riotTag,
-    });
+    };
+    window.electron.ipcRenderer.sendMessage('set-config', newConfig);
+    dispatch({ type: 'SET_CONFIG', payload: newConfig });
   };
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('config', (event, config) => {
+      setShowNameAndTag(event?.showNameAndTag || false);
+      setBackgroundColor(event?.backgroundColor || '#1e1e1e');
+      setSelectedRegion(event?.selectedRegion || 'NA');
+      setRiotName(event?.riotName || '');
+      setRiotTag(event?.riotTag || '');
+    });
+    window.electron.ipcRenderer.sendMessage('get-config');
+  }, []);
 
   const handleRiotNameChange = (event) => {
     setRiotName(event.target.value);
@@ -60,7 +74,9 @@ const SettingsPage = () => {
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
             >
-              <option value="NA">NA</option>
+              <option default value="NA">
+                NA
+              </option>
               <option value="EU">EU</option>
             </select>
           </label>

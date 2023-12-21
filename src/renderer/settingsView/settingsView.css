@@ -5,8 +5,8 @@
   padding: 20px;
   background: #2a2a2a;
   color: #fff;
-  max-width: 300px;
-  margin: 0 auto;
+  width: calc(100vw - 40px);
+  height: calc(100vh - 40px);
 }
 
 h2 {

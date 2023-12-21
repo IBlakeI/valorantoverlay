@@ -37,9 +37,12 @@
 }
 
 .overlayWrapper {
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
   display: flex;
   flex-direction: column;
   gap: 5px;
   font-size: 15px;
   font-style: italic;
+  padding: 10px;
 }
