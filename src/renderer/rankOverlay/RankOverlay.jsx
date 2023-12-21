@@ -1,14 +1,28 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './rankOverlay.css';
 const RankOverlay = () => {
   const [data, setData] = useState();
+
   const fetchStats = async () => {
     await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/na/Dasnerth/king`)
       .then((response) => response.json())
       .then((data) => setData(data?.data));
   };
-  console.log(data);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Listen for the IPC message to open the '/settings' route
+    const openSettingsHandler = () => {
+      // Perform programmatic navigation to '/settings'
+      navigate('/settings');
+    };
+
+    window.electron?.ipcRenderer.on('open-settings', openSettingsHandler);
+  }, [navigate]);
+
   useEffect(() => {
     fetchStats();
     let interval = setInterval(() => {

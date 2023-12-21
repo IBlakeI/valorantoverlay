@@ -5,7 +5,8 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
-
+import { resolveHtmlPath } from '../main/util';
+import path from 'path';
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
   submenu?: DarwinMenuItemConstructorOptions[] | Menu;
@@ -13,9 +14,11 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
+  settingsWindow!: BrowserWindow;
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
+    this.settingsWindow = null!;
   }
 
   buildMenu(): Menu {
@@ -192,93 +195,101 @@ export default class MenuBuilder {
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
   }
 
+  createSettingsWindow = () => {
+    // Create a new BrowserWindow for the settings
+    this.settingsWindow = new BrowserWindow({
+      width: 400,
+      height: 300,
+      webPreferences: {
+        nodeIntegration: true,
+        preload: app.isPackaged
+          ? path.join(__dirname, 'preload.js')
+          : path.join(__dirname, '../../.erb/dll/preload.js'),
+      },
+    });
+
+    this.settingsWindow.loadURL(
+      resolveHtmlPath('index.html') + '?route=/settings',
+    );
+
+    // Once the window is ready, send an IPC message to the renderer process
+    this.settingsWindow.webContents.on('did-finish-load', () => {
+      this.settingsWindow.webContents.send('open-settings');
+    });
+
+    // Handle window closed event
+    this.settingsWindow.on('closed', () => {
+      this.settingsWindow = null!;
+    });
+  };
+
   buildDefaultTemplate() {
     const templateDefault = [
+      // {
+      //   label: '&File',
+      //   submenu: [
+      //     {
+      //       label: '&Open',
+      //       accelerator: 'Ctrl+O',
+      //     },
+      //     {
+      //       label: '&Close',
+      //       accelerator: 'Ctrl+W',
+      //       click: () => {
+      //         this.mainWindow.close();
+      //       },
+      //     },
+      //   ],
+      // },
+      // {
+      //   label: '&View',
+      //   submenu:
+      //     process.env.NODE_ENV === 'development' ||
+      //     process.env.DEBUG_PROD === 'true'
+      //       ? [
+      //           {
+      //             label: '&Reload',
+      //             accelerator: 'Ctrl+R',
+      //             click: () => {
+      //               this.mainWindow.webContents.reload();
+      //             },
+      //           },
+      //           {
+      //             label: 'Toggle &Full Screen',
+      //             accelerator: 'F11',
+      //             click: () => {
+      //               this.mainWindow.setFullScreen(
+      //                 !this.mainWindow.isFullScreen(),
+      //               );
+      //             },
+      //           },
+      //           {
+      //             label: 'Toggle &Developer Tools',
+      //             accelerator: 'Alt+Ctrl+I',
+      //             click: () => {
+      //               this.mainWindow.webContents.toggleDevTools();
+      //             },
+      //           },
+      //         ]
+      //       : [
+      //           {
+      //             label: 'Toggle &Full Screen',
+      //             accelerator: 'F11',
+      //             click: () => {
+      //               this.mainWindow.setFullScreen(
+      //                 !this.mainWindow.isFullScreen(),
+      //               );
+      //             },
+      //           },
+      //         ],
+      // },
       {
-        label: '&File',
+        label: 'Settings',
         submenu: [
           {
-            label: '&Open',
-            accelerator: 'Ctrl+O',
-          },
-          {
-            label: '&Close',
-            accelerator: 'Ctrl+W',
+            label: 'Open Settings',
             click: () => {
-              this.mainWindow.close();
-            },
-          },
-        ],
-      },
-      {
-        label: '&View',
-        submenu:
-          process.env.NODE_ENV === 'development' ||
-          process.env.DEBUG_PROD === 'true'
-            ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  },
-                },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen(),
-                    );
-                  },
-                },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.webContents.toggleDevTools();
-                  },
-                },
-              ]
-            : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen(),
-                    );
-                  },
-                },
-              ],
-      },
-      {
-        label: 'Help',
-        submenu: [
-          {
-            label: 'Learn More',
-            click() {
-              shell.openExternal('https://electronjs.org');
-            },
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme',
-              );
-            },
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            },
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              this.createSettingsWindow();
             },
           },
         ],
