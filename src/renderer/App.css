@@ -1,18 +1,17 @@
-
 body {
   position: relative;
   color: white;
   height: 100vh;
-  background-color: rgb(37, 37, 37);
   font-family: sans-serif;
   overflow-y: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0;
+  padding: 0;
 }
 
-.wrapper{
-  width: 100%;
+#root {
   height: 100%;
-  background-color: rgb(36, 36, 36);
+  width: 100%;
 }

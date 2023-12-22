@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import * as fs from 'fs';
 
 class AppUpdater {
   constructor() {
@@ -72,7 +73,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 350,
-    height: 140,
+    height: 170,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -92,6 +93,44 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+  });
+
+  const readConfig = () => {
+    const configPath = path.join('config.json');
+
+    try {
+      const configData = fs.readFileSync(configPath, 'utf-8');
+      return JSON.parse(configData);
+    } catch (error) {
+      console.error('Error reading config file:', error);
+      return null;
+    }
+  };
+
+  const writeConfig = (config: object) => {
+    const configPath = path.join('config.json');
+
+    try {
+      const configData = JSON.stringify(config, null, 2);
+      fs.writeFileSync(configPath, configData, 'utf-8');
+      console.log('Config file updated successfully.');
+    } catch (error) {
+      console.error('Error writing config file:', error);
+    }
+  };
+
+  ipcMain.on('get-config', (event) => {
+    const config = readConfig();
+    event.reply('config', config);
+  });
+
+  ipcMain.on('set-config', (event, newConfig) => {
+    writeConfig(newConfig);
+
+    //broadcast the new config to all windows
+    BrowserWindow.getAllWindows().forEach((window) => {
+      window.webContents.send('config-updated', newConfig);
+    });
   });
 
   mainWindow.on('closed', () => {
