@@ -96,7 +96,7 @@ const createWindow = async () => {
   });
 
   const readConfig = () => {
-    const configPath = path.join(app.getAppPath(), 'config.json');
+    const configPath = path.join('config.json');
 
     try {
       const configData = fs.readFileSync(configPath, 'utf-8');
@@ -107,9 +107,8 @@ const createWindow = async () => {
     }
   };
 
-  // Function to write the configuration file
   const writeConfig = (config: object) => {
-    const configPath = path.join(app.getAppPath(), 'config.json');
+    const configPath = path.join('config.json');
 
     try {
       const configData = JSON.stringify(config, null, 2);
@@ -120,18 +119,15 @@ const createWindow = async () => {
     }
   };
 
-  // IPC communication for configuration
   ipcMain.on('get-config', (event) => {
-    // Read your config from wherever it's stored
     const config = readConfig();
     event.reply('config', config);
   });
 
   ipcMain.on('set-config', (event, newConfig) => {
-    // Save the new configuration
     writeConfig(newConfig);
 
-    // Optionally, broadcast the new config to all windows
+    //broadcast the new config to all windows
     BrowserWindow.getAllWindows().forEach((window) => {
       window.webContents.send('config-updated', newConfig);
     });
