@@ -203,7 +203,7 @@ export default class MenuBuilder {
 
     this.settingsWindow = new BrowserWindow({
       width: 400,
-      height: 300,
+      height: 350,
       webPreferences: {
         nodeIntegration: true,
         preload: app.isPackaged
