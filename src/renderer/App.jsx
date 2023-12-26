@@ -13,10 +13,7 @@ const App = () => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   return (
     <AppContext.Provider value={{ state, dispatch }}>
-      <div
-        className="pageWrapper"
-        style={{ fontFamily: state?.config?.selectedFont }}
-      >
+      <div className="pageWrapper">
         <Router>
           <Routes>
             <Route path="/" element={<RankOverlay />} />

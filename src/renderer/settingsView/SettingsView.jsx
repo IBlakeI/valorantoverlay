@@ -8,7 +8,7 @@ const SettingsPage = () => {
   const [selectedRegion, setSelectedRegion] = useState('NA');
   const [riotName, setRiotName] = useState('');
   const [riotTag, setRiotTag] = useState('');
-  const [selectedFont, setSelectedFont] = useState('Default Font');
+  const [selectedFont, setSelectedFont] = useState('sans-serif');
   const { dispatch } = useContext(AppContext);
 
   const fontOptions = [
@@ -92,6 +92,7 @@ const SettingsPage = () => {
               value={selectedFont}
               onChange={handleFontChange}
               style={{ fontFamily: selectedFont }}
+              className="font-select"
             >
               <option value="sans-serif" style={{ fontFamily: 'sans-serif' }}>
                 Sans Serif (default)
