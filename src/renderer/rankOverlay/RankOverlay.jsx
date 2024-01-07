@@ -81,6 +81,7 @@ const RankOverlay = () => {
       className="overlayWrapper"
       style={{
         backgroundColor: state?.config?.backgroundColor || 'rgb(37, 37, 37)',
+        fontFamily: state?.config?.selectedFont || 'sans-serif',
       }}
     >
       {isValidInput ? (

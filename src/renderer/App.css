@@ -2,16 +2,29 @@ body {
   position: relative;
   color: white;
   height: 100vh;
-  font-family: sans-serif;
   overflow-y: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0;
   padding: 0;
+  font-family: 'ValorantFont';
 }
 
 #root {
   height: 100%;
   width: 100%;
+}
+
+.pageWrapper {
+  height: 100%;
+}
+
+@font-face {
+  font-family: 'ValorantFont';
+  src: url('/fonts/ValorantFont.ttf');
+}
+@font-face {
+  font-family: 'joystix';
+  src: url('/fonts/joystix.otf');
 }

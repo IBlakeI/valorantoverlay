@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../App';
-import './settingsView.css'; // Import your CSS file
+import './settingsView.css';
 
 const SettingsPage = () => {
   const [showNameAndTag, setShowNameAndTag] = useState(true);
@@ -8,7 +8,19 @@ const SettingsPage = () => {
   const [selectedRegion, setSelectedRegion] = useState('NA');
   const [riotName, setRiotName] = useState('');
   const [riotTag, setRiotTag] = useState('');
-  const { state, dispatch } = useContext(AppContext);
+  const [selectedFont, setSelectedFont] = useState('sans-serif');
+  const { dispatch } = useContext(AppContext);
+
+  const fontOptions = [
+    'Arial',
+    'Helvetica',
+    'Times New Roman',
+    'Courier New',
+    'Verdana',
+    'Georgia',
+    'ValorantFont',
+    'joystix',
+  ];
 
   const handleSaveSettings = (e) => {
     e.preventDefault();
@@ -19,18 +31,20 @@ const SettingsPage = () => {
       selectedRegion,
       riotName,
       riotTag,
+      selectedFont,
     };
     window.electron.ipcRenderer.sendMessage('set-config', newConfig);
     dispatch({ type: 'SET_CONFIG', payload: newConfig });
   };
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('config', (event, config) => {
-      setShowNameAndTag(event?.showNameAndTag || false);
-      setBackgroundColor(event?.backgroundColor || '#1e1e1e');
-      setSelectedRegion(event?.selectedRegion || 'NA');
-      setRiotName(event?.riotName || '');
-      setRiotTag(event?.riotTag || '');
+    window.electron.ipcRenderer.on('config', (config) => {
+      setShowNameAndTag(config?.showNameAndTag || false);
+      setBackgroundColor(config?.backgroundColor || '#1e1e1e');
+      setSelectedRegion(config?.selectedRegion || 'NA');
+      setRiotName(config?.riotName || '');
+      setRiotTag(config?.riotTag || '');
+      setSelectedFont(config?.selectedFont || 'sans-serif');
     });
     window.electron.ipcRenderer.sendMessage('get-config');
   }, []);
@@ -41,6 +55,10 @@ const SettingsPage = () => {
 
   const handleRiotTagChange = (event) => {
     setRiotTag(event.target.value);
+  };
+
+  const handleFontChange = (e) => {
+    setSelectedFont(e.target.value);
   };
 
   return (
@@ -65,6 +83,27 @@ const SettingsPage = () => {
               value={backgroundColor}
               onChange={(e) => setBackgroundColor(e.target.value)}
             />
+          </label>
+        </div>
+        <div className="setting-option">
+          <label>
+            Font:{' '}
+            <select
+              value={selectedFont}
+              onChange={handleFontChange}
+              style={{ fontFamily: selectedFont }}
+              className="font-select"
+            >
+              <option value="sans-serif" style={{ fontFamily: 'sans-serif' }}>
+                Sans Serif (default)
+              </option>
+
+              {fontOptions.map((font) => (
+                <option key={font} value={font} style={{ fontFamily: font }}>
+                  {font}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
         <div className="setting-option">

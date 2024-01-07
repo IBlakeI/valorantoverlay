@@ -13,12 +13,14 @@ const App = () => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   return (
     <AppContext.Provider value={{ state, dispatch }}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<RankOverlay />} />
-          <Route path="/settings" element={<SettingsView />} />
-        </Routes>
-      </Router>
+      <div className="pageWrapper">
+        <Router>
+          <Routes>
+            <Route path="/" element={<RankOverlay />} />
+            <Route path="/settings" element={<SettingsView />} />
+          </Routes>
+        </Router>
+      </div>
     </AppContext.Provider>
   );
 };

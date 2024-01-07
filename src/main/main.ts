@@ -74,7 +74,9 @@ const createWindow = async () => {
     show: false,
     width: 350,
     height: 170,
-    icon: getAssetPath('icon.png'),
+    icon: app.isPackaged
+      ? path.join(process.resourcesPath, 'assets', 'icon.jpg')
+      : path.join(__dirname, '../../assets', 'icon.jpg'),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -135,6 +137,7 @@ const createWindow = async () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+    app.quit();
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
