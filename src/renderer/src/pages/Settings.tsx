@@ -253,6 +253,7 @@ const Settings = () => {
             <button
               type="submit"
               className="
+                cursor-pointer
                 rounded-lg
                 bg-white
                 px-5

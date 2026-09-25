@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, Menu, ipcMain } from "electron";
+import { app, shell, BrowserWindow, Menu, ipcMain, screen } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -7,15 +7,61 @@ let mainWindow: BrowserWindow | null = null;
 let settingsWindow: BrowserWindow | null = null;
 
 function createSettingsWindow(): void {
-  // If settings is already open, focus it instead of creating another one.
   if (settingsWindow && !settingsWindow.isDestroyed()) {
     settingsWindow.focus();
     return;
   }
 
+  const SETTINGS_WIDTH = 500;
+  const SETTINGS_HEIGHT = 750;
+  const GAP = 10;
+
+  const mainBounds = mainWindow?.getBounds();
+
+  let x: number;
+  let y: number;
+
+  if (mainBounds) {
+    // Find the display containing the main window.
+    const display = screen.getDisplayMatching(mainBounds);
+    const workArea = display.workArea;
+
+    // Center Settings horizontally relative to the main window.
+    x = mainBounds.x + Math.round((mainBounds.width - SETTINGS_WIDTH) / 2);
+
+    // Prefer opening below the main window.
+    y = mainBounds.y + mainBounds.height + GAP;
+
+    // If there's not enough room below, open above it.
+    if (y + SETTINGS_HEIGHT > workArea.y + workArea.height) {
+      y = mainBounds.y - SETTINGS_HEIGHT - GAP;
+    }
+
+    // Keep the window inside the horizontal work area.
+    x = Math.max(
+      workArea.x,
+      Math.min(x, workArea.x + workArea.width - SETTINGS_WIDTH),
+    );
+
+    // Keep it inside vertically too.
+    y = Math.max(
+      workArea.y,
+      Math.min(y, workArea.y + workArea.height - SETTINGS_HEIGHT),
+    );
+  } else {
+    // Fallback if the main window doesn't exist.
+    const display = screen.getPrimaryDisplay();
+    const workArea = display.workArea;
+
+    x = workArea.x + Math.round((workArea.width - SETTINGS_WIDTH) / 2);
+    y = workArea.y + Math.round((workArea.height - SETTINGS_HEIGHT) / 2);
+  }
+
   settingsWindow = new BrowserWindow({
-    width: 500,
-    height: 750,
+    width: SETTINGS_WIDTH,
+    height: SETTINGS_HEIGHT,
+    x,
+    y,
     resizable: false,
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
@@ -104,13 +150,12 @@ function createApplicationMenu(): void {
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 400,
-    height: 165,
+    height: 190,
     minWidth: 350,
     maxWidth: 450,
     minHeight: 165,
-    maxHeight: 175,
+    maxHeight: 190,
     show: false,
-    autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
@@ -120,6 +165,15 @@ function createWindow(): void {
 
   mainWindow.on("ready-to-show", () => {
     mainWindow?.show();
+  });
+  mainWindow.on("closed", () => {
+    mainWindow = null;
+
+    if (settingsWindow && !settingsWindow.isDestroyed()) {
+      settingsWindow.close();
+    }
+
+    app.quit();
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

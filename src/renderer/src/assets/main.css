@@ -30,7 +30,7 @@ body {
 }
 
 @utility settings-input {
-  @apply w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none;
+  @apply w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none cursor-pointer;
   @apply placeholder:text-zinc-600;
   @apply focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500;
 }
