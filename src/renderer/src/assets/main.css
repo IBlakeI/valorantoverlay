@@ -1,0 +1,53 @@
+@import "./base.css";
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: #09090b;
+  user-select: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@font-face {
+  font-family: "ValorantFont";
+  src: url("./fonts/ValorantFont.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "joystix";
+  src: url("./fonts/joystix.otf") format("opentype");
+}
+
+@utility settings-input {
+  @apply w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none;
+  @apply placeholder:text-zinc-600;
+  @apply focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500;
+}
+
+@utility settings-select {
+  @apply w-full appearance-none rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 pr-10 text-sm text-zinc-100 outline-none;
+  @apply focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500;
+}
+
+@utility settings-checkbox {
+  @apply h-4 w-4 cursor-pointer rounded border-zinc-600 bg-zinc-900 accent-white;
+}
+
+@utility settings-label {
+  @apply mb-2 block text-sm font-medium text-zinc-300;
+}
+
+@utility settings-section {
+  @apply rounded-xl border border-zinc-800 bg-zinc-900/70 p-5 shadow-sm;
+}
