@@ -17,7 +17,7 @@ interface ConfigStore {
 const defaultConfig: Config = {
   riotName: "",
   riotTag: "",
-  selectedRegion: "",
+  selectedRegion: "NA",
   selectedFont: "sans-serif",
   showNameAndTag: false,
 };
