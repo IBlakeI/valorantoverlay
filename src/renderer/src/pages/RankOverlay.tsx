@@ -238,7 +238,7 @@ const RankOverlay = () => {
               <div
                 className={`
                   flex
-                  min-w-[68px]
+                  min-w-[100px]
                   flex-col
                   items-center
                   justify-center
