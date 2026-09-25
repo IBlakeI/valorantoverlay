@@ -30,7 +30,7 @@ You need to generate an api key [here](https://api.henrikdev.xyz/dashboard/).
 4. Set a name, description, and leave the access tier as "Standard"
 5. Generate the key and copy it
 6. Run `cp .env-example .env` on the command line from the root of the repo
-7. Open the .env file and past in your key after the "="
+7. Open the .env file and pass in your key after the "="
 
 ### Configuring the Overlay
 
