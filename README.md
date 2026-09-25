@@ -36,9 +36,9 @@ You need to generate an api key [here](https://api.henrikdev.xyz/dashboard/).
 
 You can set your username and tag and customize the look of the overlay in the settings menu. This can be opened from the menu bar at the top of your screen.
 
-![Overlay](./src/renderer/assets/image-1.png)
+![Overlay](./src/renderer/src/assets/image-1.png)
 
-![Settings Page](./src/renderer/assets/image.png)
+![Settings Page](./src/renderer/src/assets/image.png)
 
 ### Build
 
