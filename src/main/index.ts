@@ -39,22 +39,41 @@ function createSettingsWindow(): void {
 }
 
 function createApplicationMenu(): void {
-  const template: Electron.MenuItemConstructorOptions[] = [
-    {
-      label: "Settings",
+  const template: Electron.MenuItemConstructorOptions[] = [];
+
+  // macOS application menu
+  if (process.platform === "darwin") {
+    template.push({
+      label: app.name,
       submenu: [
         {
-          label: "Open Settings",
-          accelerator: "CommandOrControl+,",
-          click: () => {
-            createSettingsWindow();
-          },
+          role: "about",
+        },
+        {
+          type: "separator",
+        },
+        {
+          role: "quit",
         },
       ],
-    },
-  ];
+    });
+  }
 
-  // Add developer options in development.
+  // Settings menu
+  template.push({
+    label: "Settings",
+    submenu: [
+      {
+        label: "Open Settings",
+        accelerator: "CommandOrControl+,",
+        click: () => {
+          createSettingsWindow();
+        },
+      },
+    ],
+  });
+
+  // Development menu
   if (is.dev) {
     template.push({
       label: "View",
